@@ -18,6 +18,12 @@ export function createWaterfall() {
     riverbed.position.set(0, 0, cliffEdgeZ - 15);
     group.add(riverbed);
 
+    const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 10);
+    const groundBelowFall = new THREE.Mesh(groundBelowFallGeo, riverbedMat);
+    groundBelowFall.rotation.x = -Math.PI / 2;
+    groundBelowFall.position.set(0, 0, cliffEdgeZ + 5);
+    group.add(groundBelowFall);
+
     const riverGeo = new THREE.PlaneGeometry(waterWidth, 30);
     const river = new THREE.Mesh(riverGeo, waterMat);
     river.rotation.x = -Math.PI / 2;
