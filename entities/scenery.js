@@ -1,5 +1,3 @@
-
-```javascript
 import * as THREE from 'three';
 
 const darkBrownMat = new THREE.MeshLambertMaterial({ color: 0x4a2d1e });

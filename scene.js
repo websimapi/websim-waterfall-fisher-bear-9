@@ -1,5 +1,3 @@
-
-```
 import * as THREE from 'three';
 
 export const scene = new THREE.Scene();
@@ -31,3 +29,4 @@ export function mountRenderer(container) {
     container.appendChild(renderer.domElement);
     resizeRenderer();
 }
+
