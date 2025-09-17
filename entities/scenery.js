@@ -18,7 +18,7 @@ function createVoxel(x, y, z, w, h, d, mat) {
 function createMountainSide(isLeft) {
     const group = new THREE.Group();
     const sign = isLeft ? -1 : 1;
-    const baseWidth = 8, baseDepth = 20, startY = 2, endY = -20, riverEdge = 4;
+    const baseWidth = 8, baseDepth = 20, startY = 2, endY = -20, riverEdge = 3.5;
     let currentY = startY, layerCount = 0;
     while (currentY > endY) {
         layerCount++;
@@ -27,7 +27,7 @@ function createMountainSide(isLeft) {
         const depthIncrease = Math.random() * 2;
         const layerWidth = baseWidth + (layerCount * widthIncrease);
         const layerDepth = baseDepth + (layerCount * depthIncrease);
-        const layerX = sign * (riverEdge + layerWidth / 2 + (Math.random() - 0.5));
+        const layerX = sign * (riverEdge + layerWidth / 2);
         const layerZ = -5 + (Math.random() - 0.5) * 2;
         const layerY = currentY - layerHeight / 2;
         group.add(createVoxel(layerX, layerY, layerZ, layerWidth, layerHeight, layerDepth, rockMat));

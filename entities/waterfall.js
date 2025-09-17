@@ -9,7 +9,7 @@ const rockFaceMat = new THREE.MeshLambertMaterial({ color: 0x808080 }); // Rock 
 export function createWaterfall() {
     const group = new THREE.Group();
     group.name = "waterfall";
-    const waterWidth = 8;
+    const waterWidth = 7; // Adjusted to match scenery gap
     const cliffEdgeZ = 2.5;
     const cliffTopY = 2;
 
@@ -26,11 +26,11 @@ export function createWaterfall() {
     fallBackdrop.position.set(0, cliffTopY - fallHeight / 2, cliffEdgeZ - 0.1); // Positioned right behind the water
     group.add(fallBackdrop);
 
-    // This is the ground where the waterfall used to land. Now we replace it with a longer riverbed.
+    // Ground below the fall now acts as a continuous riverbed
     const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 20);
     const groundBelowFall = new THREE.Mesh(groundBelowFallGeo, riverbedMat);
     groundBelowFall.rotation.x = -Math.PI / 2;
-    groundBelowFall.position.set(0, cliffTopY - fallHeight, cliffEdgeZ + 10);
+    groundBelowFall.position.set(0, 0, cliffEdgeZ + 10); // Set Y to 0 for seamless riverbed
     group.add(groundBelowFall);
 
     const riverGeo = new THREE.PlaneGeometry(waterWidth, 30);
