@@ -1,3 +1,5 @@
+
+```javascript
 import * as THREE from 'three';
 
 const fishMat = new THREE.MeshLambertMaterial({ color: 0xc0c0c0 });
@@ -18,7 +20,7 @@ function createVoxel(x, y, z, w, h, d, mat) {
 export function createFish(scene, score = 0) {
     const group = new THREE.Group();
     group.name = 'fish';
-    
+
     // body (tapered along +Z, nose forward)
     const segments = 6, length = 3.0, maxW = 0.8, maxH = 0.9;
     const segmentsArr = [];
@@ -32,14 +34,14 @@ export function createFish(scene, score = 0) {
         const bellyH = h * 0.25;
         group.add(createVoxel(0, -h * 0.3, z, w * 0.95, bellyH, (length / segments) * 0.98, bellyMat));
     }
-    
+
     // tail (vertical caudal fin + small stabilizer)
     const tailZ = -0.4 + length + 0.15;
     const tailBase = createVoxel(0, 0.0, tailZ - 0.1, 0.25, 0.6, 0.18, fishTailMat);
     const tailV = createVoxel(0, 0.0, tailZ, 0.06, 0.9, 0.5, fishTailMat);
     const tailH = createVoxel(0, -0.05, tailZ - 0.05, 0.5, 0.08, 0.35, fishTailMat);
     group.add(tailBase, tailV, tailH);
-    
+
     // fins
     const dorsal = createVoxel(0, 0.55, 0.9, 0.1, 0.25, 0.9, finMat);
     const anal   = createVoxel(0, -0.55, 1.1, 0.1, 0.22, 0.8, finMat);
@@ -48,7 +50,7 @@ export function createFish(scene, score = 0) {
     const pelvicL = createVoxel(0.22, -0.45, 1.0, 0.08, 0.16, 0.25, finMat);
     const pelvicR = createVoxel(-0.22, -0.45, 1.0, 0.08, 0.16, 0.25, finMat);
     group.add(dorsal, anal, pectoralL, pectoralR, pelvicL, pelvicR);
-    
+
     // head details: mouth, gill cover, eyes
     group.add(createVoxel(0, 0.0, 0.25, 0.7, 0.6, 0.15, bellyMat)); // gill cover
     const scleraL = createVoxel(0.30, 0.24, 0.08, 0.24, 0.24, 0.22, scleraMat);
@@ -58,7 +60,7 @@ export function createFish(scene, score = 0) {
     const highlightL = createVoxel(0.36, 0.29, 0.16, 0.04, 0.04, 0.03, scleraMat);
     const highlightR = createVoxel(-0.36, 0.29, 0.16, 0.04, 0.04, 0.03, scleraMat);
     group.add(scleraL, scleraR, pupilL, pupilR, highlightL, highlightR);
-    
+
     // orient fish to face downstream (+Z), head leading
     group.rotation.y = Math.PI;
     const riverWidth = 7;
@@ -106,7 +108,7 @@ export function updateFish(fish) {
     const finFlap = Math.sin(ud.swimTimer * 3.0) * 0.25;
     if (ud.pectoralL) ud.pectoralL.rotation.z = 0.2 + finFlap;
     if (ud.pectoralR) ud.pectoralR.rotation.z = -0.2 - finFlap;
-    
+
     // spine wiggle across segments
     const spinePhase = ud.swimTimer * ud.wiggleFreq;
     if (ud.segments) for (const s of ud.segments) {

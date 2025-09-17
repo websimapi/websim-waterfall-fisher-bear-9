@@ -47,4 +47,3 @@ export function showGameOver() {
 export function showStart() {
     document.getElementById('start-screen').classList.remove('hidden');
 }
-

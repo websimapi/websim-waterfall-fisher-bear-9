@@ -1,3 +1,5 @@
+
+```javascript
 import * as THREE from 'three';
 
 const waterMat = new THREE.MeshLambertMaterial({ color: 0x1e90ff, transparent: true, opacity: 0.8 });
@@ -27,19 +29,16 @@ export function createWaterfall() {
     riverbed.position.set(0, 0, cliffEdgeZ - 15);
     group.add(riverbed);
 
-    // Create a more varied, multi-layered rock face behind the waterfall
-    let currentY = cliffTopY;
-    const endY = cliffTopY - fallHeight;
-    while (currentY > endY) {
-        const layerHeight = 1 + Math.random() * 2.5;
-        const layerDepth = 0.5 + Math.random() * 1.5;
-        const layerWidth = waterWidth * (0.9 + Math.random() * 0.2); // slight width variance
-        const layerX = (Math.random() - 0.5) * (waterWidth - layerWidth);
-        const layerZ = cliffEdgeZ - 0.1 - (layerDepth / 2);
-        const layerY = currentY - layerHeight / 2;
-        group.add(createVoxel(layerX, layerY, layerZ, layerWidth, layerHeight, layerDepth, rockFaceMat));
-        currentY -= layerHeight;
-    }
+    // Create a single rock face behind the waterfall matching its dimensions
+    const rockFaceDepth = 1;
+    const rockFaceGeo = new THREE.BoxGeometry(waterWidth, fallHeight, rockFaceDepth);
+    const rockFace = new THREE.Mesh(rockFaceGeo, rockFaceMat);
+    rockFace.position.set(
+        0, 
+        cliffTopY - fallHeight / 2, 
+        cliffEdgeZ - rockFaceDepth / 2 - 0.01 // Position it just behind the waterfall plane
+    );
+    group.add(rockFace);
 
     // Ground below the fall now acts as a continuous riverbed
     const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 20);
@@ -76,7 +75,7 @@ export function createWaterfall() {
         const particleSize = 0.05 + Math.random() * 0.1;
         const particleGeo = new THREE.BoxGeometry(particleSize, particleSize, particleSize);
         const particle = new THREE.Mesh(particleGeo, particleMat);
-        
+
         particle.position.set(
             (Math.random() - 0.5) * (waterWidth - 1),
             Math.random() * cliffTopY, // from riverbed to surface
@@ -90,7 +89,7 @@ export function createWaterfall() {
         particle.userData.isUnderwaterParticle = true;
         group.add(particle);
     }
-    
+
     return group;
 }
 
@@ -103,7 +102,7 @@ export function updateWaterfall(waterfallGroup) {
         if (child.userData.velocity) {
             child.position.add(child.userData.velocity);
             if (child.userData.isUnderwaterParticle) {
-                 if (child.position.z > cliffEdgeZ) {
+                if (child.position.z > cliffEdgeZ) {
                     child.position.z = cliffEdgeZ - 30; // reset to back
                 }
                 if (child.position.y > cliffTopY || child.position.y < 0) {
