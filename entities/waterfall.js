@@ -20,16 +20,17 @@ export function createWaterfall() {
     group.add(riverbed);
 
     // Create a vertical rock face behind the waterfall
-    const fallBackdropGeo = new THREE.PlaneGeometry(waterWidth, 20);
+    const fallHeight = 20; // The height of the waterfall drop
+    const fallBackdropGeo = new THREE.PlaneGeometry(waterWidth, fallHeight);
     const fallBackdrop = new THREE.Mesh(fallBackdropGeo, rockFaceMat);
-    fallBackdrop.position.set(0, cliffTopY - 10, cliffEdgeZ - 0.1); // Positioned right behind the water
+    fallBackdrop.position.set(0, cliffTopY - fallHeight / 2, cliffEdgeZ - 0.1); // Positioned right behind the water
     group.add(fallBackdrop);
 
     // This is the ground where the waterfall used to land. Now we replace it with a longer riverbed.
     const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 20);
     const groundBelowFall = new THREE.Mesh(groundBelowFallGeo, riverbedMat);
     groundBelowFall.rotation.x = -Math.PI / 2;
-    groundBelowFall.position.set(0, 0, cliffEdgeZ + 10);
+    groundBelowFall.position.set(0, cliffTopY - fallHeight, cliffEdgeZ + 10);
     group.add(groundBelowFall);
 
     const riverGeo = new THREE.PlaneGeometry(waterWidth, 30);
@@ -37,9 +38,9 @@ export function createWaterfall() {
     river.rotation.x = -Math.PI / 2;
     river.position.set(0, cliffTopY, cliffEdgeZ - 15);
     group.add(river);
-    const fallGeo = new THREE.PlaneGeometry(waterWidth, 20);
+    const fallGeo = new THREE.PlaneGeometry(waterWidth, fallHeight);
     const fall = new THREE.Mesh(fallGeo, waterMat);
-    fall.position.set(0, cliffTopY - 10, cliffEdgeZ);
+    fall.position.set(0, cliffTopY - fallHeight / 2, cliffEdgeZ);
     group.add(fall);
     for (let i = 0; i < 50; i++) {
         const foam = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), foamMat);
@@ -49,7 +50,7 @@ export function createWaterfall() {
             foam.position.set((Math.random() - 0.5) * (waterWidth - 1), cliffTopY + 0.1, cliffEdgeZ - (Math.random() * 30));
             foam.userData.velocity = new THREE.Vector3(0, 0, Math.random() * 0.05 + 0.05);
         } else {
-            foam.position.set((Math.random() - 0.5) * (waterWidth - 1), cliffTopY - (Math.random() * 20), cliffEdgeZ);
+            foam.position.set((Math.random() - 0.5) * (waterWidth - 1), cliffTopY - (Math.random() * fallHeight), cliffEdgeZ);
             foam.userData.velocity = new THREE.Vector3(0, -(Math.random() * 0.1 + 0.1), 0);
         }
         group.add(foam);
@@ -82,6 +83,7 @@ export function updateWaterfall(waterfallGroup) {
     if (!waterfallGroup) return;
     const cliffEdgeZ = 2.5;
     const cliffTopY = 2;
+    const fallHeight = 20;
     waterfallGroup.children.forEach(child => {
         if (child.userData.velocity) {
             child.position.add(child.userData.velocity);
@@ -94,7 +96,7 @@ export function updateWaterfall(waterfallGroup) {
                 }
             } else if (child.userData.onRiver && child.position.z > cliffEdgeZ) {
                 child.position.z = cliffEdgeZ - 30;
-            } else if (!child.userData.onRiver && child.position.y < cliffTopY - 20) {
+            } else if (!child.userData.onRiver && child.position.y < cliffTopY - fallHeight) {
                 child.position.y = cliffTopY;
             }
         }
