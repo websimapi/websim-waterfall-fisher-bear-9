@@ -4,6 +4,7 @@ const waterMat = new THREE.MeshLambertMaterial({ color: 0x1e90ff, transparent: t
 const foamMat = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
 const particleMat = new THREE.MeshBasicMaterial({ color: 0x967969, transparent: true, opacity: 0.6 });
 const riverbedMat = new THREE.MeshLambertMaterial({ color: 0xc2b280 });
+const rockFaceMat = new THREE.MeshLambertMaterial({ color: 0x808080 }); // Rock color for cliff
 
 export function createWaterfall() {
     const group = new THREE.Group();
@@ -18,10 +19,17 @@ export function createWaterfall() {
     riverbed.position.set(0, 0, cliffEdgeZ - 15);
     group.add(riverbed);
 
-    const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 10);
+    // Create a vertical rock face behind the waterfall
+    const fallBackdropGeo = new THREE.PlaneGeometry(waterWidth, 20);
+    const fallBackdrop = new THREE.Mesh(fallBackdropGeo, rockFaceMat);
+    fallBackdrop.position.set(0, cliffTopY - 10, cliffEdgeZ - 0.1); // Positioned right behind the water
+    group.add(fallBackdrop);
+
+    // This is the ground where the waterfall used to land. Now we replace it with a longer riverbed.
+    const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 20);
     const groundBelowFall = new THREE.Mesh(groundBelowFallGeo, riverbedMat);
     groundBelowFall.rotation.x = -Math.PI / 2;
-    groundBelowFall.position.set(0, 0, cliffEdgeZ + 5);
+    groundBelowFall.position.set(0, 0, cliffEdgeZ + 10);
     group.add(groundBelowFall);
 
     const riverGeo = new THREE.PlaneGeometry(waterWidth, 30);
