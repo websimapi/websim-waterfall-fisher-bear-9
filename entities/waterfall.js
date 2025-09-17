@@ -6,12 +6,20 @@ const particleMat = new THREE.MeshBasicMaterial({ color: 0x967969, transparent: 
 const riverbedMat = new THREE.MeshLambertMaterial({ color: 0xc2b280 });
 const rockFaceMat = new THREE.MeshLambertMaterial({ color: 0x808080 }); // Rock color for cliff
 
+function createVoxel(x, y, z, w, h, d, mat) {
+    const geo = new THREE.BoxGeometry(w, h, d);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x, y, z);
+    return mesh;
+}
+
 export function createWaterfall() {
     const group = new THREE.Group();
     group.name = "waterfall";
     const waterWidth = 7; // Adjusted to match scenery gap
     const cliffEdgeZ = 2.5;
     const cliffTopY = 2;
+    const fallHeight = 20;
 
     const riverbedGeo = new THREE.PlaneGeometry(waterWidth, 30);
     const riverbed = new THREE.Mesh(riverbedGeo, riverbedMat);
@@ -19,12 +27,19 @@ export function createWaterfall() {
     riverbed.position.set(0, 0, cliffEdgeZ - 15);
     group.add(riverbed);
 
-    // Create a vertical rock face behind the waterfall
-    const fallHeight = 20; // The height of the waterfall drop
-    const fallBackdropGeo = new THREE.PlaneGeometry(waterWidth, fallHeight);
-    const fallBackdrop = new THREE.Mesh(fallBackdropGeo, rockFaceMat);
-    fallBackdrop.position.set(0, cliffTopY - fallHeight / 2, cliffEdgeZ - 0.1); // Positioned right behind the water
-    group.add(fallBackdrop);
+    // Create a more varied, multi-layered rock face behind the waterfall
+    let currentY = cliffTopY;
+    const endY = cliffTopY - fallHeight;
+    while (currentY > endY) {
+        const layerHeight = 1 + Math.random() * 2.5;
+        const layerDepth = 0.5 + Math.random() * 1.5;
+        const layerWidth = waterWidth * (0.9 + Math.random() * 0.2); // slight width variance
+        const layerX = (Math.random() - 0.5) * (waterWidth - layerWidth);
+        const layerZ = cliffEdgeZ - 0.1 - (layerDepth / 2);
+        const layerY = currentY - layerHeight / 2;
+        group.add(createVoxel(layerX, layerY, layerZ, layerWidth, layerHeight, layerDepth, rockFaceMat));
+        currentY -= layerHeight;
+    }
 
     // Ground below the fall now acts as a continuous riverbed
     const groundBelowFallGeo = new THREE.PlaneGeometry(waterWidth, 20);
