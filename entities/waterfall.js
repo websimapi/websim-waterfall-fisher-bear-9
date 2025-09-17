@@ -3,6 +3,7 @@ import * as THREE from 'three';
 const waterMat = new THREE.MeshLambertMaterial({ color: 0x1e90ff, transparent: true, opacity: 0.8 });
 const foamMat = new THREE.MeshLambertMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
 const particleMat = new THREE.MeshBasicMaterial({ color: 0x967969, transparent: true, opacity: 0.6 });
+const riverbedMat = new THREE.MeshLambertMaterial({ color: 0xc2b280 });
 
 export function createWaterfall() {
     const group = new THREE.Group();
@@ -10,6 +11,13 @@ export function createWaterfall() {
     const waterWidth = 8;
     const cliffEdgeZ = 2.5;
     const cliffTopY = 2;
+
+    const riverbedGeo = new THREE.PlaneGeometry(waterWidth, 30);
+    const riverbed = new THREE.Mesh(riverbedGeo, riverbedMat);
+    riverbed.rotation.x = -Math.PI / 2;
+    riverbed.position.set(0, 0, cliffEdgeZ - 15);
+    group.add(riverbed);
+
     const riverGeo = new THREE.PlaneGeometry(waterWidth, 30);
     const river = new THREE.Mesh(riverGeo, waterMat);
     river.rotation.x = -Math.PI / 2;
